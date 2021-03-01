@@ -123,18 +123,16 @@ myString& myString::operator = (myString& B) {
 bool myString::operator == (myString& B) {
 
 	// TODO
-	int a = 0;
 	if (B.size == size){
 		for (int i = 0; i < size; i++){
-			if (B.strArray[i] == strArray[i])
-				a++;
+			if (B.strArray[i] != strArray[i])
+				return false;
 		}
-		if (a == B.size)
-			return true;
-
-		}
+	}
 	else
 		return false;
+	return true;
+
 }
 
 // comparison of myString A if less than myString B - return true or false
@@ -142,12 +140,13 @@ bool myString::operator < (myString& B) {
 
 	int i = 0;
 	while (strArray[i] != '\0'){
-		if (strArray[i] < B.strArray[i])
-			return true;
-		if (strArray[i] > B.strArray[i])
-			return false;
 		if (strArray[i] == B.strArray[i])
 			i++;
+		else if (strArray[i] < B.strArray[i])
+			return true;
+		else
+			return false;
+
 	}
 	return false;
 }
@@ -158,12 +157,13 @@ bool myString::operator > (myString& B) {
 	// TODO
 	int i = 0;
 	while (strArray[i] != '\0'){
-		if (strArray[i] > B.strArray[i])
-			return true;
-		if (strArray[i] < B.strArray[i])
-			return false;
 		if (strArray[i] == B.strArray[i])
 			i++;
+		else if (strArray[i] > B.strArray[i])
+			return true;
+		else
+			return false;
+
 	}
 	return false;
 }
@@ -347,10 +347,6 @@ bagOfWords* bagOfWords::removeStopWords(myString* stopWords, int numStopWords)
 			}
 		}
 	}
-
-
-
-
 	return newBag;
 }
 
@@ -400,7 +396,6 @@ void bagOfWords::addWord(myString & newWord)
 	int position = binarySearchAndInsert(newWord);
 	if (word[position] == newWord){
 		fre[position] = fre[position] + 1;
-
 	}
 	else {
 		for (int i = _size - 1; i >= position; i--){
@@ -408,7 +403,7 @@ void bagOfWords::addWord(myString & newWord)
 			fre[i+1] = fre[i];
 		}
 		word[position] = newWord;
-		fre[position] = fre[position] + 1;
+		fre[position] = 1;
 		this->setSize(++_size);
 	}
 	_words = word;
