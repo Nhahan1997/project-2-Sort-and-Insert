@@ -28,23 +28,23 @@ class myString;
 class myString {
 	friend ostream& operator << (ostream& s, myString& A);
 protected:
-	char* strArray;
-	int size;
+	char* strArray;		// array of character
+	int size;			// size of strArray
 	void strCpy (char* A, char* B, int n);
 public:
-	myString ();
-	myString(char* inpStr);
-	myString (myString& B);
-	int Size();
-	char* getWord();
-    bool operator == (myString& B);
-    bool operator > (myString& B);
-    bool operator < (myString& B);
-    myString& operator = (myString& B);
-    myString& operator = (char* B);
+	myString ();				// default constructor
+	myString(char* inpStr);		// non-default constructor
+	myString (myString& B);		// non-default constructor
+	int Size();					// return size of array strArray
+	char* getWord();			// return strArray
+    bool operator == (myString& B);			// operator check if two myString object equal or not
+    bool operator > (myString& B);			// operator check if a myString object greater than B or not
+    bool operator < (myString& B);			// operator check if a myString object smaller than B or not
+    myString& operator = (myString& B);		// assign myString object B to a myString object
+    myString& operator = (char* B);			// assign char B to a myString object
 };
 
-// outputs a given string A
+// outputs a given string A. Return size of strArray
 ostream& operator << (ostream& s, myString& A) {
 	s << A.strArray;
 	return s;
@@ -60,12 +60,12 @@ myString::myString () {
 // non default constructor - initialize object with an existing string
 myString::myString (char* inpStr) {
 	int i = 0;
-	while (inpStr[i] != '\0')
+	while (inpStr[i] != '\0')			// get the size of inpStr
 		i++;
 	size = i;
-	strArray = new char[size];
-	emptyString (strArray, size+1);
-	for (int j=0; j < size; j++)
+	strArray = new char[size];			// create new strArray with size is size
+	emptyString (strArray, size+1);		// fill strArray with null element
+	for (int j=0; j < size; j++)		// then assign all element of inpStr to strArray
 		strArray[j] = inpStr[j];
 }
 
@@ -73,12 +73,13 @@ myString::myString (char* inpStr) {
 myString::myString (myString& B) {
 	delete [] strArray;
 	strArray = NULL;
-	size = B.size;
-	strArray = new char[size];
-	emptyString(strArray, size+1);
-	stringCopy (B.strArray, size, strArray);
+	size = B.size;			// assign size of B to size
+	strArray = new char[size];			// create new strArray with size is size
+	emptyString(strArray, size+1);		// fill strArray with null element
+	stringCopy (B.strArray, size, strArray);	// copy all element in strArray of B to strArray
 }
 
+// Return strArray
 char* myString::getWord()
 {
 	return strArray;
@@ -91,55 +92,50 @@ int myString::Size () {
 
 // overloading = operator - initialize object with an existing string
 myString& myString::operator = (char* B) {
-
-	// TODO
 	int i = 0;
-	while (B[i] != '\0')
+	while (B[i] != '\0')	// get the size of B character
 		i++;
 	size = i;
-	strArray = new char[size];
-	emptyString(strArray, size+1);
-	for (int j = 0; j < size; j++)
+	strArray = new char[size];		// assign new strArray with size is size
+	emptyString(strArray, size+1);	// fill strArray with null element
+	for (int j = 0; j < size; j++)	// then assign all element of inpStr to strArray
 		strArray[j] = B[j];
 
-	return *this;
+	return *this;					// return strArray, size of array
 }
 
 // overloading = operator - initialize object with an existing mystring object
 myString& myString::operator = (myString& B) {
-
-	// TODO
-	if(strArray != NULL)
+	if(strArray != NULL)		// If array is not null, delete it
 			delete[] strArray;
-	size = B.size;
-	strArray = new char[size];
-	emptyString(strArray, size+1);
-	stringCopy(B.strArray, size, strArray);
+	size = B.size;				// assign size of B to size
+	strArray = new char[size];	// create new strArray with size is size
+	emptyString(strArray, size+1);				// fill strArray with null elements
+	stringCopy(B.strArray, size, strArray);		// copy all element in strArray of B to strArray
 
-	return *this;
+	return *this;				// return strArray, size of array
 }
 
 // checking if two myString objects are the same - return true or false
 bool myString::operator == (myString& B) {
-
-	// TODO
-	if (B.size == size){
-		for (int i = 0; i < size; i++){
+	if (B.size == size){					// check if two size is equal or not
+		for (int i = 0; i < size; i++){		// loop if is there any element is not equal, If so, return false
 			if (B.strArray[i] != strArray[i])
 				return false;
 		}
 	}
-	else
+	else	// if two size is not equal, return false
 		return false;
-	return true;
+	return true;	// if size equal and each element of two object equal, return true
 
 }
 
 // comparison of myString A if less than myString B - return true or false
 bool myString::operator < (myString& B) {
-
 	int i = 0;
-	while (strArray[i] != '\0'){
+	while (strArray[i] != '\0' || B.strArray[i] != '\0'){
+		if (strArray[i] == '\0' && B.strArray[i] != '\0')
+			return true;
 		if (strArray[i] == B.strArray[i])
 			i++;
 		else if (strArray[i] < B.strArray[i])
@@ -153,10 +149,10 @@ bool myString::operator < (myString& B) {
 
 // comparison of myString A if greater than myString B - return true or false
 bool myString::operator > (myString& B) {
-
-	// TODO
 	int i = 0;
-	while (strArray[i] != '\0'){
+	while (strArray[i] != '\0' || B.strArray[i] != '\0'){
+		if (strArray[i] != '\0' && B.strArray[i] == '\0')
+			return true;
 		if (strArray[i] == B.strArray[i])
 			i++;
 		else if (strArray[i] > B.strArray[i])
@@ -175,20 +171,20 @@ char* getNextToken () {
 
 	char c;
 	int i = 0;
-	while (!cin.eof()) {
-		cin.get(c);
-		//if (!cin.eof ()) {
-			if ((c != '\n') && (c != ' ')) {
+	while (!cin.eof()) {	// check if the file have read to the end
+		cin.get(c);			// get character c
+		if (!cin.eof ()) {
+			if ((c != '\n') && (c != ' ')) { 		// make sure c is not null or space
 				if ( ((c >= 'a') && (c <= 'z')) ||
 					 ((c >= 'A') && (c <= 'Z')) ||
 					 ((c >= '0') && (c <= '9')) )
-					str[i++] = c;
+					str[i++] = c;	// if character is upper or lower case letter or number, add to str
 			}
-			else if ((c == '\n') && (i > 0))
+			else if ((c == '\n') && (i > 0))	// if c is null and c is not first character, just return str
 				return str;
-			else if ((c == ' ') && (i > 0))
+			else if ((c == ' ') && (i > 0))		// if c is space and c is not first character, just return str
 				return str;
-		//}
+		}
 	}
 	if (i > 0) return str;
 	else return NULL;
@@ -201,26 +197,26 @@ class bagOfWords {
 private:
 	int binarySearchAndInsert (myString& W);
 protected:
-	myString* _words;
-	int* _frequencies;
-	int _size;
+	myString* _words;		// myString object _words
+	int* _frequencies;		// array _frequencies
+	int _size;				// size of _words and _frequencies
 
 public:
-	bagOfWords ();
-	bagOfWords (int numOfWords);
+	bagOfWords ();			// default constructor
+	bagOfWords (int numOfWords);	// non default constructor
 
-	myString* get_Words();
-	int* get_Freq();
-	int get_size();
+	myString* get_Words();	// return _words
+	int* get_Freq();		// return frequencies
+	int get_size();			// return size of _words, _frequencies
 
-	void setSize(int i);
+	void setSize(int i);	// set the new size for _words, _frequencies
 
 	void addWord (myString& W);//insert word w into the array _words - keep it sorted alphabetically
 	void sortFreq(); //sort words array based on frequency
 	void sortWords(); //sort words array alphabetically
 	void display(); //print word followed by a colon followed by a single space and frequencuy
 	bagOfWords* removeStopWords(myString* stopWords, int numStopWords); //stopWords from _words array
-	~bagOfWords();
+	~bagOfWords();	//destructor
 };
 
 // default constructor - initializes with no words
@@ -239,21 +235,25 @@ bagOfWords::bagOfWords (int numOfWords)
 	_frequencies = new int[numOfWords];
 }
 
+// Return _words
 myString* bagOfWords::get_Words()
 {
 	return _words;
 }
 
+// return _frequencies
 int* bagOfWords::get_Freq()
 {
 	return _frequencies;
 }
 
+// return size of _words and _frequencies
 int bagOfWords::get_size()
 {
 	return _size;
 }
 
+// set the new size for _words and _frequencies
 void bagOfWords::setSize(int i)
 {
 	_size = i;
@@ -271,35 +271,34 @@ void bagOfWords::display()
 
 }
 
-// sort the _words and _frequencies based on frequencies
+// sort the _words and _frequencies based on frequencies in ascending order
 void bagOfWords::sortFreq()
 {
 	// TODO
-	int temp1;
-	myString temp2;
-	for (int i = 0; i < _size; i++){
-		for (int j = i+1; j < _size; j++){
-			if (_frequencies[i] > _frequencies[j]){
-				temp1 = _frequencies[i];
+	int temp1;			// temp int variable
+	myString temp2;		// temp myString variable
+	for (int i = 0; i < _size; i++){  		// take the element at certain index
+		for (int j = i+1; j < _size; j++){	// then loop to compare with all element behind it
+			if (_frequencies[i] > _frequencies[j]){		// if element at certain index of frequencies greater
+				temp1 = _frequencies[i];				// than the next element, swap it
 				_frequencies[i] = _frequencies[j];
 				_frequencies[j] = temp1;
 
-				temp2 = _words[i];
+				temp2 = _words[i];						// also swap the word  corresponding with frequencies
 				_words[i] = _words[j];
 				_words[j] = temp2;
 			}
-			if (_frequencies[i] == _frequencies[j]){
-				if (_words[i] > _words[j]){
+			if (_frequencies[i] == _frequencies[j]){	// If two element is equal, sort base on alphabetically
+				if (_words[i] > _words[j]){				// swap the word to follow alphabetically order
 					temp2 = _words[i];
 					_words[i] = _words[j];
 					_words[j] = temp2;
 
 					temp1 = _frequencies[i];
-					_frequencies[i] = _frequencies[j];
+					_frequencies[i] = _frequencies[j];	// swap frequencies corresponding with word
 					_frequencies[j] = temp1;
 				}
 			}
-
 		}
 	}
 }
@@ -308,17 +307,17 @@ void bagOfWords::sortFreq()
 void bagOfWords::sortWords()
 {
 	//char* temp;
-	myString temp1;
-	int temp2;
-;	for (int i = 0; i < _size; i++){
-		for (int j = i+1; j < _size; j++){
-			if (_words[i] > _words[j]){
-				temp1 = _words[i];
+	myString temp1;		// temp myString variable
+	int temp2;			// temp int variable
+;	for (int i = 0; i < _size; i++){		// take the element at certain index
+		for (int j = i+1; j < _size; j++){	// then loop to compare with all element behind it
+			if (_words[i] > _words[j]){		// if element at certain index of word greater
+				temp1 = _words[i];			// than the next element, swap it
 				_words[i] = _words[j];
 				_words[j] = temp1;
 
 				temp2 = _frequencies[i];
-				_frequencies[i] = _frequencies[j];
+				_frequencies[i] = _frequencies[j];		// swap frequencies corresponding with word
 				_frequencies[j] = temp2;
 			}
 		}
@@ -327,27 +326,26 @@ void bagOfWords::sortWords()
 
 bagOfWords* bagOfWords::removeStopWords(myString* stopWords, int numStopWords)
 {
-
-	// TODO
-	bagOfWords* newBag = new bagOfWords(this->get_size() + 1);
+	bagOfWords* newBag = new bagOfWords(this->get_size());	// create newBag with size is size of this _words
 	for (int i = 0; i < newBag->_size; i++){
-		newBag->_words[i] = _words[i];
-		newBag->_frequencies[i] = _frequencies[i];
+		newBag->_words[i] = _words[i];		// loop to copy all element of this _word to _words of newBag
+		newBag->_frequencies[i] = _frequencies[i];	// copy all element of this _frequencies to _frequencies of newBag
 	}
 
 	int i = 0;
-	while (i < numStopWords){
-		for (int j = 0; j < newBag->_size; j++){
-			if (stopWords[i] == newBag->_words[j]){
-				for (int k = j; k < newBag->_size - 1; k++){
-					newBag->_words[k] = newBag->_words[k + 1];
-					newBag->_frequencies[k] = newBag->_frequencies[k + 1];
+	while (i < numStopWords){ 	// loop in range of numStopWords
+		for (int j = 0; j < newBag->_size; j++){	// loop each element in _words of newBag
+			if (stopWords[i] == newBag->_words[j]){	// if the stopWord at index i is in _word, do the remove
+				for (int k = j; k < newBag->_size - 1; k++){	// remove by shifting all the elements behind index need to remove
+					newBag->_words[k] = newBag->_words[k + 1];	// to the left. So the element at that index will be removed
+					newBag->_frequencies[k] = newBag->_frequencies[k + 1];	// also shift corresponding to the left
 				}
-				newBag->setSize(--newBag->_size);
+				newBag->setSize(--newBag->_size);	// decrease the size of _words and _frequencies of newBag
 			}
 		}
-	}
-	return newBag;
+		i++;
+	}	// when done with looping, all the word in stopWordList has been remove from _words
+	return newBag;	// return new bag
 }
 
 // to search for a given word in _words - returns 0 if not found, 1 if found
@@ -370,7 +368,7 @@ int bagOfWords::binarySearchAndInsert (myString& wordToFind)
 		}
 
 		else{
-			end = mid -1;
+			end = mid - 1;
 		}
 	}
 
@@ -411,6 +409,8 @@ void bagOfWords::addWord(myString & newWord)
 
 }
 
+// destructors method. Delete the pointer data
+// and set all static data to default
 bagOfWords::~bagOfWords(){
 	if (_words != NULL) delete _words;
 	if (_frequencies != NULL) delete _frequencies;
@@ -476,7 +476,7 @@ int main () {
 	cout << "newBag - Sorted based on frequency:" << endl;
 	(*newBag).display ();
 
-	// TODO : destructors
+	// delete all the pointer data and object
 	delete [] stopWordsList;
 	delete myBag;
 	delete newBag;
