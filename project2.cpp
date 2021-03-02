@@ -132,16 +132,19 @@ bool myString::operator == (myString& B) {
 
 // comparison of myString A if less than myString B - return true or false
 bool myString::operator < (myString& B) {
-	int i = 0;
-	while (strArray[i] != '\0' || B.strArray[i] != '\0'){
+	int i = 0;	// index of strArray
+	while (strArray[i] != '\0' || B.strArray[i] != '\0'){	// check if both element of are null or null. If both are null, exist loop
+		// if strArray at index i is null while B.strArray is not
+		// that mean strArray have small size and also mean all element before current index is equal to other strArray
+		// Example: "not" is smaller than "notify".
 		if (strArray[i] == '\0' && B.strArray[i] != '\0')
 			return true;
-		if (strArray[i] == B.strArray[i])
+		if (strArray[i] == B.strArray[i])		// If both are equal increment index i
 			i++;
-		else if (strArray[i] < B.strArray[i])
+		else if (strArray[i] < B.strArray[i])	// If there is one index smaller, strArray smaller than B.strArray
 			return true;
 		else
-			return false;
+			return false;	// else return false
 
 	}
 	return false;
@@ -149,16 +152,19 @@ bool myString::operator < (myString& B) {
 
 // comparison of myString A if greater than myString B - return true or false
 bool myString::operator > (myString& B) {
-	int i = 0;
-	while (strArray[i] != '\0' || B.strArray[i] != '\0'){
+	int i = 0;	// index of strArray
+	while (strArray[i] != '\0' || B.strArray[i] != '\0'){	// check if both element of are null or null. If both are null, exist loop
+		// if B.strArray at index i is null while strArray is not
+		// that mean strArray have larger size and also mean all element before current index is equal to other strArray
+		// Example: "notify" is greater than "not".
 		if (strArray[i] != '\0' && B.strArray[i] == '\0')
 			return true;
-		if (strArray[i] == B.strArray[i])
+		if (strArray[i] == B.strArray[i])		// If both are equal increment index i
 			i++;
-		else if (strArray[i] > B.strArray[i])
+		else if (strArray[i] > B.strArray[i])	// If there is one index lager, strArray larger than B.strArray
 			return true;
 		else
-			return false;
+			return false;	// else return false
 
 	}
 	return false;
@@ -348,32 +354,32 @@ bagOfWords* bagOfWords::removeStopWords(myString* stopWords, int numStopWords)
 	return newBag;	// return new bag
 }
 
-// to search for a given word in _words - returns 0 if not found, 1 if found
+// to search for a given word in _words - returns index of element where will be inserted
 int bagOfWords::binarySearchAndInsert (myString& wordToFind)
 {
+	int start = 0;			// start index
+	int end = _size - 1 ;	// end index
+	int mid;				// middle index
 
-	// TODO
-	int start = 0;
-	int end = _size - 1 ;
-	int mid;
-
-	while (start < end){
+	while (start < end){	// while start index smaller than middle index
 		mid = (start + end) / 2;
-		if (_words[mid] == wordToFind){
+		if (_words[mid] == wordToFind){		// if element at mid equal wordToFind, return that index
 			return mid;
 		}
 
-		else if (_words[mid] < wordToFind){
+		else if (_words[mid] < wordToFind){		// if it is smaller, re-range start now is mid + 1
 			start = mid + 1;
 		}
 
 		else{
-			end = mid - 1;
+			end = mid - 1;	//if it is greater, re-range end now is mid - 1
 		}
 	}
 
+	// if start and end are equal and compare element at start with wordToFind. If it is smaller, return index next to start
 	if ((start == end) && (_words[start] < wordToFind))
 		return start + 1;
+	// if start greater than end or element at start greater than wordToFind, return index start
 	else
 		return start;
 
@@ -382,39 +388,38 @@ int bagOfWords::binarySearchAndInsert (myString& wordToFind)
 // method to add words to the bagOfWords object
 void bagOfWords::addWord(myString & newWord)
 {
-	// TODO
-
-	myString* word = new myString[_size + 1];
-	int* fre = new int[_size + 1];
+	// re-allocated _words and _frequencies by create new word with size is _size+1. With +1, array could contains
+	// a null position after last index. It would help to shift element to the left when insert new word
+	myString* tempWord = new myString[_size + 1];
+	int* tempFre = new int[_size + 1];
 	for (int i = 0; i < _size; i++){
-		word[i] = _words[i];
-		fre[i] = _frequencies[i];
+		tempWord[i] = _words[i];		//copy all _word's element to tempWord
+		tempFre[i] = _frequencies[i];	//copy all _frequencies's element to tempFre
 	}
 
-	int position = binarySearchAndInsert(newWord);
-	if (word[position] == newWord){
-		fre[position] = fre[position] + 1;
+	int position = binarySearchAndInsert(newWord);	// assign index is returned in binarySearchAndInsert to position
+	if (tempWord[position] == newWord){		// if tempWord contained newWord at position, increment frequency
+		tempFre[position] = tempFre[position] + 1;
 	}
-	else {
+	else {	// else shift all element to the left, start at position index
 		for (int i = _size - 1; i >= position; i--){
-			word[i+1] = word[i];
-			fre[i+1] = fre[i];
+			tempWord[i+1] = tempWord[i];
+			tempFre[i+1] = tempFre[i];
 		}
-		word[position] = newWord;
-		fre[position] = 1;
-		this->setSize(++_size);
+		tempWord[position] = newWord;	// after shifting, assign newWord to position
+		tempFre[position] = 1;	//because this is first time the word is added to tempWord, frequency is 1
+		this->setSize(++_size);	// increment size using setSize
 	}
-	_words = word;
-	_frequencies = fre;
+	_words = tempWord;	//assign tempWord back to _words
+	_frequencies = tempFre;	//assign tempFre back to _frequencies
 
 }
 
-// destructors method. Delete the pointer data
+// destructor method. Delete the pointer data
 // and set all static data to default
 bagOfWords::~bagOfWords(){
 	if (_words != NULL) delete _words;
 	if (_frequencies != NULL) delete _frequencies;
-	//cout << "bagOfWords object destroy!" << endl;
 	_size = 0;
 }
 
@@ -440,13 +445,13 @@ int main () {
 	//Now read a text and put them in the bagOfWords instance.
 	bagOfWords* myBag = new bagOfWords ();
 
-	token = getNextToken();
+	token = getNextToken();	// get the next token
 
 	while (token != NULL)
 	{
 		tokenString = new myString (token); //create a myString object with the token
 		(*myBag).addWord(*tokenString); //add token to myBag
-		token = getNextToken ();
+		token = getNextToken ();	// get the next token
 	}
 
 	// this should display the token and frequency;
