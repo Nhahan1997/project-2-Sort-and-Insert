@@ -414,7 +414,7 @@ void bagOfWords::addWord(myString & newWord)
 bagOfWords::~bagOfWords(){
 	if (_words != NULL) delete _words;
 	if (_frequencies != NULL) delete _frequencies;
-	cout << "bagOfWords object destroy!" << endl;
+	//cout << "bagOfWords object destroy!" << endl;
 	_size = 0;
 }
 
